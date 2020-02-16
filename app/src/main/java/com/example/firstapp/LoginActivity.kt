@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
@@ -22,6 +23,12 @@ class LoginActivity : AppCompatActivity() {
         val email = findViewById<EditText>(R.id.emailId)
         val password = findViewById<EditText>(R.id.passwordId)
         val signInButton = findViewById<Button>(R.id.LoginBtn)
+        val signUpLabel = findViewById<TextView>(R.id.signupLabel)
+
+        signUpLabel.setOnClickListener { view ->
+            var intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
 
         signInButton.setOnClickListener { view ->
             checkValidation(view,email,password)

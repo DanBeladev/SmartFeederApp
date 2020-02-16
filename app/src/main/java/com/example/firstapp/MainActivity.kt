@@ -2,7 +2,6 @@ package com.example.firstapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log.d
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
@@ -27,7 +26,9 @@ class MainActivity : AppCompatActivity() {
          val editTextEmail = findViewById<EditText>(R.id.emailId)
          val editTextPass = findViewById<EditText>(R.id.passwordId)
          val signupButton = findViewById<Button>(R.id.signUpBtn)
-         val alreadyExistUser = findViewById<TextView>(R.id.loginLabel)
+         val nameText = findViewById<EditText>(R.id.nameId)
+         val phoneNumber= findViewById<EditText>(R.id.phoneId)
+         val alreadyExistUser = findViewById<TextView>(R.id.signupLabel)
 
          alreadyExistUser.setOnClickListener { view ->
              var intent = Intent(this, LoginActivity::class.java)
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
          }
 
          signupButton.setOnClickListener {view ->
-             checkValidation(editTextEmail, editTextPass,view)
+             checkValidation(editTextEmail, editTextPass,nameText,phoneNumber,view)
          }
 
 
@@ -44,10 +45,14 @@ class MainActivity : AppCompatActivity() {
      private fun checkValidation(
          email: EditText?,
          password: EditText?,
+         name: EditText?,
+         phone: EditText?,
          view: View
      ) {
          var isEmailOK =true
          var isPasswordOk =true
+         var isNameOk =true
+         var isPhoneOk =true
          if (email != null) {
              if (email.text.isEmpty()) {
                  email.setError("please insert an email")
@@ -66,14 +71,39 @@ class MainActivity : AppCompatActivity() {
                  }
              }
 
-             if(isEmailOK && isPasswordOk)
+             if(name!=null)
              {
-                 Toast.makeText(this,"allow to logged in ",Toast.LENGTH_SHORT).show()
+                 if(name.text.isEmpty())
+                 {
+                     name.setError("please insert full name")
+                     name.requestFocus()
+                     isNameOk=false
+                 }
+             }
+             else{
+                 isNameOk=false
+             }
+
+             if(phone!=null)
+             {
+                 if(phone.text.isEmpty() || phone.text.length<10)
+                 {
+                     phone.setError("invalid phone number")
+                     phone.requestFocus()
+                     isPhoneOk=false
+                 }
+             }
+             else{
+                 isPhoneOk=false
+             }
+
+             if(isEmailOK && isPasswordOk && isNameOk && isPhoneOk)
+             {
                  fbAuth.createUserWithEmailAndPassword(email.text.toString(), password?.text.toString()).addOnCompleteListener(this
                  ) { task ->
                      if(task.isSuccessful){
-                         d("login succesfull","yayyyy")
-                      var intent = Intent(this, HomeActivity::class.java)
+                         Toast.makeText(this,"allow to logged in ",Toast.LENGTH_SHORT).show()
+                      val intent = Intent(this, HomeActivity::class.java)
                         intent.putExtra("id", fbAuth.currentUser?.email)
                         startActivity(intent)
 
